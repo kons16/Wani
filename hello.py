@@ -1,7 +1,6 @@
 from wani.app import Wani
-from wani.responses import  Response
+from wani.responses import Response
 from wsgiref.simple_server import make_server
-
 
 app = Wani()
 

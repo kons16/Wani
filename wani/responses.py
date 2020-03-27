@@ -1,6 +1,7 @@
 from http.client import responses as http_responses
 from wsgiref.headers import Headers
 
+
 class Response:
     default_status = 200
     default_charset = "utf-8"
