@@ -1,4 +1,5 @@
 from .routes import Router
+from .requests import Request
 
 
 class Wani:
@@ -13,7 +14,6 @@ class Wani:
         return decorator(callback) if callback else decorator
 
     def __call__(self, env, start_response):
-        method = env['REQUEST_METHOD'].upper()
-        path = env['PATH_INFO'] or '/'
-        callback, kwargs = self.router.match(method, path)
+        request = Request(env)
+        callback, kwargs = self.router.match(request.method, request.path)
         return callback(env, start_response, **kwargs)
