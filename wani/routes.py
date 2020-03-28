@@ -11,17 +11,23 @@ def http405(env, start_response):
     return [b"405 Method Not Allowed"]
 
 
+def split_by_slash(path):
+    stripped_path = path.lstrip('/').rstrip('/')
+    return stripped_path.split('/')
+
+
 class Router:
     def __init__(self):
         self.routes = []
 
     def add(self, method, path, callback):
-        self.routes.append({
-            "method": method,
-            "path": path,
-            "path_compiled": re.compile(path),
-            "callback": callback
-        })
+        for m in method:
+            self.routes.append({
+                "method": m,
+                "path": path,
+                "path_compiled": re.compile(path),
+                "callback": callback
+            })
 
     def match(self, method, path):
         error_callback = http404
@@ -31,6 +37,7 @@ class Router:
                 continue
 
             error_callback = http405
+            print(matched.groupdict())
             url_vars = matched.groupdict()
             if method == r["method"]:
                 return r["callback"], url_vars
