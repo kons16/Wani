@@ -2,6 +2,11 @@ from wani.app import Wani
 from wani.responses import Response
 from wsgiref.simple_server import make_server
 from wani.responses import TemplateResponse
+from wsgi_static_middleware import StaticMiddleware
+import os
+
+BASE_DIR = os.path.dirname(__name__)
+STATIC_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 app = Wani()
 
@@ -23,5 +28,6 @@ def users(request):
 
 
 if __name__ == "__main__":
+    app = StaticMiddleware(app, static_root='static', static_dirs=STATIC_DIRS)
     httpd = make_server("", 8000, app)
     httpd.serve_forever()
