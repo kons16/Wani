@@ -16,10 +16,10 @@ def user_detail(request, name):
     return Response("Hello {name}".format(name=name))
 
 
-@app.route('^/user/$', 'GET')
+@app.route("^/user", "GET")
 def users(request):
-    users = ['user%s' % i for i in range(10)]
-    return TemplateResponse('users.html', title='User List', users=users)
+    users = ["user%s" % i for i in range(10)]
+    return TemplateResponse("users.html", title="User List", users=users)
 
 
 if __name__ == "__main__":
