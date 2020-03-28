@@ -23,8 +23,8 @@ class Wani:
         callback, url_vars = self.router.match(request.method, request.path)
 
         response = callback(request, **url_vars)
-        start_response(response.status, response.header_list)
+        start_response(response.status_code, response.header_list)
 
         if isinstance(response, TemplateResponse):
             return [response.render_body(self.jinja2_environment)]
-        return [response.body]
+        return response.body
