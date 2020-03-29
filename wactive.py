@@ -9,6 +9,7 @@ $python wactive.py add [table_name] [カラム名]:[型] ...
 """
 import sys
 import sqlite3
+from MySQLdb import escape_string
 
 
 def wactive(create_type, table_name, column):
@@ -17,8 +18,6 @@ def wactive(create_type, table_name, column):
     """
     if create_type == "create":
         """ テーブルの作成 """
-        conn = sqlite3.connect("db/development.sqlite3")
-        c = conn.cursor()
         table_column_type = ""
         for i, c in enumerate(column):
             info = c.split(":")
@@ -27,15 +26,19 @@ def wactive(create_type, table_name, column):
             else:
                 table_column_type += info[0] + " " + info[1]
 
-        c.execute("create table {}({})".format(table_name, table_column_type))
+        conn = sqlite3.connect("db/development.sqlite3")
+        c = conn.cursor()
+        c.executescript("CREATE TABLE %s(%s)" % (table_name, table_column_type))
         conn.commit()
         conn.close()
 
     elif create_type == "add":
         """ カラムの追加 """
         print("no")
-    else:
+    elif create_type == "see":
         print("no type")
+    else:
+        print("no")
 
 
 if __name__ == "__main__":
