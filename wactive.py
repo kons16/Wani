@@ -9,12 +9,17 @@ $python wactive.py add [table_name] [カラム名]:[型]
 """
 import sys
 import sqlite3
+import os
 
 
 def wactive(create_type, table_name, column):
     """
     create test_table ['a:int', 'b:int']
     """
+    # dbディレクトリがなければ作成
+    if not os.path.exists("db"):
+        os.makedirs("db")
+
     if create_type == "create":
         """ テーブルの作成 """
         table_column_type = ""
