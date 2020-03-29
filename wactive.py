@@ -5,11 +5,10 @@
 $ python wactive.py create [table_name] [カラム名]:[型] ...
 
 既存テーブルへのカラム追加
-$python wactive.py add [table_name] [カラム名]:[型] ...
+$python wactive.py add [table_name] [カラム名]:[型]
 """
 import sys
 import sqlite3
-from MySQLdb import escape_string
 
 
 def wactive(create_type, table_name, column):
@@ -34,9 +33,24 @@ def wactive(create_type, table_name, column):
 
     elif create_type == "add":
         """ カラムの追加 """
-        print("no")
+
+        info = column[0].split(":")
+        table_column_type = info[0] + " " + info[1]
+
+        conn = sqlite3.connect("db/development.sqlite3")
+        c = conn.cursor()
+        c.executescript("ALTER TABLE %s add column %s" % (table_name, table_column_type))
+        conn.commit()
+        conn.close()
+
     elif create_type == "see":
-        print("no type")
+        conn = sqlite3.connect("db/development.sqlite3")
+        c = conn.cursor()
+        c.executescript('select * from %s' % (table_name))
+        data = c.fetchall()
+        print(data)
+        conn.close()
+
     else:
         print("no")
 
