@@ -11,12 +11,12 @@ STATIC_DIRS = [os.path.join(BASE_DIR, 'static')]
 app = Wani()
 
 
-@app.route("^/$", "GET")
-def hello(request):
+@app.route("/", ["GET"])
+def hello(request, vars):
     return Response("Hello World")
 
 
-@app.route("/user/{name}", "GET")
+@app.route("/user/{name}", ["GET"])
 def user_detail(request, name):
     return Response("Hello {name}".format(name=name))
 
@@ -29,7 +29,7 @@ def get_data(request):
         return Response("{}".format(request.forms["num"]))
 
 
-@app.route("/user", "GET")
+@app.route("/user", ["GET"])
 def users(request):
     users = ["user%s" % i for i in range(10)]
     return TemplateResponse("users.html", title="User List", users=users)

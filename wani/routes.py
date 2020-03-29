@@ -24,21 +24,32 @@ class Router:
         for m in method:
             self.routes.append({
                 "method": m,
-                "path": path,
-                "path_compiled": re.compile(path),
+                "path": split_by_slash(path),
+                # "path_compiled": re.compile(path),
                 "callback": callback
             })
 
     def match(self, method, path):
         error_callback = http404
-        for r in self.routes:
-            matched = r["path_compiled"].match(path)
-            if not matched:
-                continue
+        get_path = split_by_slash(path)
 
-            error_callback = http405
-            print(matched.groupdict())
-            url_vars = matched.groupdict()
-            if method == r["method"]:
-                return r["callback"], url_vars
+        for route in self.routes:
+            url_vars = {}
+            if len(route["path"]) == len(get_path):
+                for r, gp in zip(route["path"], get_path):
+                    if r != gp and r not in "{":
+                        # r  ['user', 'name']
+                        # gp ['user', 'tom']
+                        break
+                    elif r != gp and r in "{":
+                        # r  ['user', '{name}']
+                        # gp ['user', 'tom']
+                        url_vars = gp
+
+                    error_callback = http405
+                    if method == route["method"]:
+                        return route["callback"], url_vars
+                else:
+                    continue
+
         return error_callback, {}
