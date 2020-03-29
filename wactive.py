@@ -1,0 +1,46 @@
+"""
+コマンドからsqliteへテーブルの作成やカラムの追加をできる
+
+テーブル作成
+$ python wactive.py create [table_name] [カラム名]:[型] ...
+
+既存テーブルへのカラム追加
+$python wactive.py add [table_name] [カラム名]:[型] ...
+"""
+import sys
+import sqlite3
+
+
+def wactive(create_type, table_name, column):
+    """
+    create test_table ['a:int', 'b:int']
+    """
+    if create_type == "create":
+        """ テーブルの作成 """
+        conn = sqlite3.connect("db/development.sqlite3")
+        c = conn.cursor()
+        table_column_type = ""
+        for i, c in enumerate(column):
+            info = c.split(":")
+            if i != len(column)-1:
+                table_column_type += info[0] + " " + info[1] + ", "
+            else:
+                table_column_type += info[0] + " " + info[1]
+
+        c.execute("create table {}({})".format(table_name, table_column_type))
+        conn.commit()
+        conn.close()
+
+    elif create_type == "add":
+        """ カラムの追加 """
+        print("no")
+    else:
+        print("no type")
+
+
+if __name__ == "__main__":
+    args = sys.argv
+    create_type = args[1]
+    table_name = args[2]
+    column = args[3:]
+    wactive(create_type, table_name, column)
