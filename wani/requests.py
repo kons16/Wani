@@ -29,6 +29,8 @@ class Request:
 
     @property
     def query(self):
+        get_param = parse_qs(self.environ["QUERY_STRING"])
+
         return parse_qs(self.environ["QUERY_STRING"])
 
     @property

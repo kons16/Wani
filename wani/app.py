@@ -20,6 +20,7 @@ class Wani:
 
     def __call__(self, env, start_response):
         request = Request(env)
+        print(request.query)
         callback, url_vars = self.router.match(request.method, request.path)
 
         response = callback(request, **url_vars)

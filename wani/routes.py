@@ -1,4 +1,6 @@
-import re
+"""
+ルーティング周りの設定
+"""
 
 
 def http404(env, start_response):
@@ -12,8 +14,29 @@ def http405(env, start_response):
 
 
 def split_by_slash(path):
-    stripped_path = path.lstrip('/').rstrip('/')
-    return stripped_path.split('/')
+    stripped_path = path.lstrip("/").rstrip("/")
+    return stripped_path.split("/")
+
+
+def delete_curly_braces(curly_braces):
+    return curly_braces.lstrip("{").rstrip("}")
+
+
+def match_path(rule, path):
+    split_rule = split_by_slash(rule)
+    split_path = split_by_slash(path)
+    url_vars = {}
+
+    if len(split_rule) != len(split_path):
+        return False, {}
+
+    for r, p in zip(split_rule, split_path):
+        if r.startswith('{') and r.endswith('}'):
+            url_vars[r[1:-1]] = p
+            continue
+        if r != p:
+            return False, {}
+    return True, url_vars
 
 
 class Router:
@@ -30,6 +53,7 @@ class Router:
             })
 
     def match(self, method, path):
+        match_flag = False
         error_callback = http404
         get_path = split_by_slash(path)
 
@@ -37,19 +61,18 @@ class Router:
             url_vars = {}
             if len(route["path"]) == len(get_path):
                 for r, gp in zip(route["path"], get_path):
-                    if r != gp and r not in "{":
-                        # r  ['user', 'name']
-                        # gp ['user', 'tom']
-                        break
-                    elif r != gp and r in "{":
+                    if r == gp:
+                        match_flag = True
+
+                    if r != gp and r in "{":
                         # r  ['user', '{name}']
                         # gp ['user', 'tom']
-                        url_vars = gp
+                        url_vars[delete_curly_braces(r)] = gp
 
-                    error_callback = http405
-                    if method == route["method"]:
-                        return route["callback"], url_vars
-                else:
-                    continue
+                error_callback = http405
+                if method == route["method"] and match_flag:
+                    # print(route["callback"], url_vars)
+                    match_flag = False
+                    return route["callback"], url_vars
 
         return error_callback, {}
