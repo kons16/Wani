@@ -61,18 +61,17 @@ class Router:
             url_vars = {}
             if len(route["path"]) == len(get_path):
                 for r, gp in zip(route["path"], get_path):
+                    if r != gp and r.startswith("{") is False:
+                        match_flag = False
+                        break
+
                     if r == gp:
                         match_flag = True
-
-                    if r != gp and r in "{":
-                        # r  ['user', '{name}']
-                        # gp ['user', 'tom']
+                    elif r != gp and r.startswith("{") and r.endswith("}"):
                         url_vars[delete_curly_braces(r)] = gp
-
-                error_callback = http405
-                if method == route["method"] and match_flag:
-                    # print(route["callback"], url_vars)
-                    match_flag = False
-                    return route["callback"], url_vars
+                else:
+                    if method == route["method"] and match_flag:
+                        match_flag = False
+                        return route["callback"], url_vars
 
         return error_callback, {}
