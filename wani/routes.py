@@ -22,23 +22,6 @@ def delete_curly_braces(curly_braces):
     return curly_braces.lstrip("{").rstrip("}")
 
 
-def match_path(rule, path):
-    split_rule = split_by_slash(rule)
-    split_path = split_by_slash(path)
-    url_vars = {}
-
-    if len(split_rule) != len(split_path):
-        return False, {}
-
-    for r, p in zip(split_rule, split_path):
-        if r.startswith('{') and r.endswith('}'):
-            url_vars[r[1:-1]] = p
-            continue
-        if r != p:
-            return False, {}
-    return True, url_vars
-
-
 class Router:
     def __init__(self):
         self.routes = []
