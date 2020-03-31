@@ -13,7 +13,7 @@ app = Wani()
 def hello(request):
     u = WactiveRecord("users")
     all_users = u.all()
-    return Response(all_users)
+    return Response("name: {}".format(all_users[0][0]))
 
 
 @app.route("/user/{name}", ["GET"])

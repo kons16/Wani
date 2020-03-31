@@ -6,13 +6,13 @@ import sqlite3
 
 class WactiveRecord:
     def __init__(self, table_name):
-        self.model = table_name
+        self.table = table_name
         self.conn = sqlite3.connect("db/development.sqlite3")
         self.c = self.conn.cursor()
 
     def create(self):
         """ テーブルにレコードを追加 """
-        self.c.executescript("INSERT INTO %s VALUES (%s)" % (self.model, ))
+        self.c.executescript("INSERT INTO %s VALUES (%s)" % (self.table, ))
         self.c.commit()
         self.c.close()
 
@@ -21,8 +21,10 @@ class WactiveRecord:
 
     def all(self):
         """ 全レコードを配列として取得 """
-        self.c.executescript("SELECT * FROM (%s)" % self.model)
-        return self.c.fetchall()
+        self.c.execute('SELECT * FROM %s' % self.table)
+        all_result = self.c.fetchall()
+        self.c.close()
+        return all_result
 
     def first(self):
         """ idが一番小さいレコードを取得 """
