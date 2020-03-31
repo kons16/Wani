@@ -11,7 +11,7 @@ app = Wani()
 
 @app.route("/", ["GET"])
 def hello(request):
-    return Response("Hello World, {}".format(request.query["name"]))
+    return Response("Hello World")
 
 
 @app.route("/user/{name}", ["GET"])
