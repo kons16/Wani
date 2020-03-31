@@ -1,4 +1,4 @@
-from wani import Wani, Response, TemplateResponse
+from wani import Wani, Response, TemplateResponse, WactiveRecord
 from wsgiref.simple_server import make_server
 from wsgi_static_middleware import StaticMiddleware
 import os
@@ -11,7 +11,9 @@ app = Wani()
 
 @app.route("/", ["GET"])
 def hello(request):
-    return Response("Hello World, {}".format(request.query["name"]))
+    u = WactiveRecord("users")
+    all_users = u.all()
+    return Response("name: {}".format(all_users[0][0]))
 
 
 @app.route("/user/{name}", ["GET"])

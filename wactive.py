@@ -32,7 +32,11 @@ def wactive(create_type, table_name, column):
 
         conn = sqlite3.connect("db/development.sqlite3")
         c = conn.cursor()
-        c.executescript("CREATE TABLE %s(%s)" % (table_name, table_column_type))
+        try:
+            c.executescript("CREATE TABLE %s(%s)" % (table_name, table_column_type))
+        except sqlite3.Error as e:
+            print('sqlite3.Error occurred:', e.args[0])
+
         conn.commit()
         conn.close()
 
