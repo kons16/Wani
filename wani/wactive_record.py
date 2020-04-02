@@ -2,6 +2,8 @@
 WactiveRecordでDB操作
 """
 import sqlite3
+import time
+from datetime import datetime, timedelta, timezone
 
 
 class WactiveRecord:
@@ -40,3 +42,10 @@ class WactiveRecord:
 
     def where(self, column_name, search_word):
         """ 該当するレコード全件を取得 """
+
+    def __CreateTimeStamp(self):
+        """ タイムスタンプの作成 """
+        now = time.time()
+        jst = timezone(timedelta(hours=+9), 'JST')
+        loc = datetime.fromtimestamp(now, jst).timestamp()
+        return loc
