@@ -2,6 +2,8 @@
 WactiveRecordでDB操作
 """
 import sqlite3
+import time
+from datetime import datetime, timedelta, timezone
 
 
 class WactiveRecord:
@@ -10,11 +12,14 @@ class WactiveRecord:
         self.conn = sqlite3.connect("db/development.sqlite3")
         self.c = self.conn.cursor()
 
-    def create(self):
+    def create(self, data):
         """ テーブルにレコードを追加 """
-        self.c.executescript("INSERT INTO %s VALUES (%s)" % (self.table, ))
-        self.c.commit()
-        self.c.close()
+        insert = "INSERT INTO {} VALUES ".format(self.table)
+        s = self.__TupleMake(data)
+        insert += s
+        self.c.execute(insert)
+        self.conn.commit()
+        self.conn.close()
 
     def update(self):
         """ テーブルのレコードをアップデート """
@@ -40,3 +45,22 @@ class WactiveRecord:
 
     def where(self, column_name, search_word):
         """ 該当するレコード全件を取得 """
+
+    def __CreateTimeStamp(self):
+        """ タイムスタンプの作成 """
+        now = time.time()
+        jst = timezone(timedelta(hours=+9), 'JST')
+        loc = datetime.fromtimestamp(now, jst).timestamp()
+        return loc
+
+    def __TupleMake(self, data):
+        """ リストのデータを()に変換する """
+        # time = self.__CreateTimeStamp()
+        s = "("
+        for i, item in enumerate(data):
+            if i == 0:
+                s += "'{}'".format(item)
+            else:
+                s += ", '{}'".format(item)
+        s += ")"
+        return s
