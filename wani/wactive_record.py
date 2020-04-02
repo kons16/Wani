@@ -10,11 +10,11 @@ class WactiveRecord:
         self.conn = sqlite3.connect("db/development.sqlite3")
         self.c = self.conn.cursor()
 
-    def create(self):
+    def create(self, args):
         """ テーブルにレコードを追加 """
-        self.c.executescript("INSERT INTO %s VALUES (%s)" % (self.table, ))
-        self.c.commit()
-        self.c.close()
+        self.c.executescript("INSERT INTO %s VALUES ('%s')" % (self.table, args))
+        self.conn.commit()
+        self.conn.close()
 
     def update(self):
         """ テーブルのレコードをアップデート """

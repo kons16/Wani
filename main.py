@@ -18,6 +18,8 @@ def hello(request):
 
 @app.route("/user/{name}", ["GET"])
 def user_detail(request, name):
+    u = WactiveRecord("users")
+    u.create("kono")
     return Response("Hello {name}".format(name=name))
 
 
