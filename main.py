@@ -18,8 +18,9 @@ def hello(request):
 
 @app.route("/user/{name}", ["GET"])
 def user_detail(request, name):
+    """ {name}をテーブルに保存 """
     u = WactiveRecord("users")
-    u.create("kono")
+    u.create([name])
     return Response("Hello {name}".format(name=name))
 
 

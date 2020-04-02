@@ -12,9 +12,12 @@ class WactiveRecord:
         self.conn = sqlite3.connect("db/development.sqlite3")
         self.c = self.conn.cursor()
 
-    def create(self, args):
+    def create(self, data):
         """ テーブルにレコードを追加 """
-        self.c.executescript("INSERT INTO %s VALUES ('%s')" % (self.table, args))
+        insert = "INSERT INTO {} VALUES ".format(self.table)
+        s = self.__TupleMake(data)
+        insert += s
+        self.c.execute(insert)
         self.conn.commit()
         self.conn.close()
 
@@ -49,3 +52,15 @@ class WactiveRecord:
         jst = timezone(timedelta(hours=+9), 'JST')
         loc = datetime.fromtimestamp(now, jst).timestamp()
         return loc
+
+    def __TupleMake(self, data):
+        """ リストのデータを()に変換する """
+        # time = self.__CreateTimeStamp()
+        s = "("
+        for i, item in enumerate(data):
+            if i == 0:
+                s += "'{}'".format(item)
+            else:
+                s += ", '{}'".format(item)
+        s += ")"
+        return s
