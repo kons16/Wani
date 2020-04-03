@@ -10,9 +10,10 @@ $python wactive.py add [table_name] [カラム名]:[型]
 import sys
 import sqlite3
 import os
+from typing import List
 
 
-def wactive(create_type, table_name, column):
+def wactive(create_type: str, table_name: str, column: List):
     """
     create test_table ['a:int', 'b:int']
     """
