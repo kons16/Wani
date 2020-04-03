@@ -8,7 +8,7 @@ from typing import List
 
 
 class WactiveRecord:
-    def __init__(self, table_name):
+    def __init__(self, table_name: str):
         self.table = table_name
         self.conn = sqlite3.connect("db/development.sqlite3")
         self.c = self.conn.cursor()
