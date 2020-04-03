@@ -4,6 +4,7 @@ WactiveRecordでDB操作
 import sqlite3
 import time
 from datetime import datetime, timedelta, timezone
+from typing import List
 
 
 class WactiveRecord:
@@ -40,10 +41,10 @@ class WactiveRecord:
     def find(self, id):
         """ idのレコードを取得 """
 
-    def find_by(self, column_name, search_word):
+    def find_by(self, column_name, search_word: str):
         """ column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得 """
 
-    def where(self, column_name, search_word):
+    def where(self, column_name, search_word: str):
         """ 該当するレコード全件を取得 """
 
     def __CreateTimeStamp(self):
@@ -53,7 +54,7 @@ class WactiveRecord:
         loc = datetime.fromtimestamp(now, jst).timestamp()
         return loc
 
-    def __TupleMake(self, data):
+    def __TupleMake(self, data: List) -> str:
         """ リストのデータを()に変換する """
         # time = self.__CreateTimeStamp()
         s = "("
