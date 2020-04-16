@@ -22,7 +22,7 @@ class WactiveRecord:
         self.conn.commit()
         self.conn.close()
 
-    def update(self):
+    def update(self, **kwargs):
         """ テーブルのレコードをアップデート """
 
     def all(self):
@@ -39,9 +39,9 @@ class WactiveRecord:
         """ idが一番大きいレコードを取得 """
 
     def find(self, id: int):
-        """ idのレコードを取得 """
+        """ idのレコードを取得し, WactiveObjectクラスとして返す """
         self.c.execute("SELECT * FROM {} WHERE id = {}".format(self.table, id))
-        get_result = self.c.fetchone()
+        get_result = WactiveObject(self.c.fetchone())
         self.c.close()
         return get_result
 
@@ -69,3 +69,8 @@ class WactiveRecord:
                 s += ", '{}'".format(item)
         s += ")"
         return s
+
+
+class WactiveObject:
+    def __init__(self):
+        pass
