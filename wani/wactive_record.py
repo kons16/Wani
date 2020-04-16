@@ -13,7 +13,7 @@ class WactiveRecord:
         self.conn = sqlite3.connect("db/development.sqlite3")
         self.c = self.conn.cursor()
 
-    def create(self, data):
+    def create(self, data: List):
         """ テーブルにレコードを追加 """
         insert = "INSERT INTO {} VALUES ".format(self.table)
         s = self.__TupleMake(data)
@@ -38,8 +38,12 @@ class WactiveRecord:
     def last(self):
         """ idが一番大きいレコードを取得 """
 
-    def find(self, id):
+    def find(self, id: int):
         """ idのレコードを取得 """
+        self.c.execute("SELECT * FROM {} WHERE id = {}".format(self.table, id))
+        get_result = self.c.fetchone()
+        self.c.close()
+        return get_result
 
     def find_by(self, column_name, search_word: str):
         """ column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得 """
@@ -57,7 +61,7 @@ class WactiveRecord:
     def __TupleMake(self, data: List) -> str:
         """ リストのデータを()に変換する """
         # time = self.__CreateTimeStamp()
-        s = "("
+        s = "(null, "
         for i, item in enumerate(data):
             if i == 0:
                 s += "'{}'".format(item)

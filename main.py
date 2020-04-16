@@ -24,6 +24,14 @@ def user_detail(request, name):
     return Response("Hello {name}".format(name=name))
 
 
+@app.route("/find_user/{id}", ["GET"])
+def find_user(request, id):
+    """ usersテーブルの{id}レコードを見つける"""
+    u = WactiveRecord("users")
+    data = u.find(id)
+    return Response("{}".format(data))
+
+
 @app.route("/data", method=["GET", "POST"])
 def get_data(request):
     if request.method == "GET":
