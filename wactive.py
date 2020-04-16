@@ -1,5 +1,5 @@
 """
-コマンドからsqliteへテーブルの作成やカラムの追加をできる
+コマンドからsqliteへテーブルの作成やカラムの追加をできる.
 
 テーブル作成
 $ python wactive.py create [table_name] [カラム名]:[型] ...
@@ -15,7 +15,8 @@ from typing import List
 
 def wactive(create_type: str, table_name: str, column: List):
     """
-    create test_table ['a:int', 'b:int']
+    AUTOINCREMENTありのid付きでusersテーブルを作成する場合
+    python wactive.py create users "name:text" "year:int"
     """
     # dbディレクトリがなければ作成
     if not os.path.exists("db"):
@@ -23,7 +24,8 @@ def wactive(create_type: str, table_name: str, column: List):
 
     if create_type == "create":
         """ テーブルの作成 """
-        table_column_type = ""
+        table_column_type = "id integer primary key, "
+
         for i, c in enumerate(column):
             info = c.split(":")
             if i != len(column)-1:
@@ -33,6 +35,7 @@ def wactive(create_type: str, table_name: str, column: List):
 
         conn = sqlite3.connect("db/development.sqlite3")
         c = conn.cursor()
+
         try:
             c.executescript("CREATE TABLE %s(%s)" % (table_name, table_column_type))
         except sqlite3.Error as e:
