@@ -24,7 +24,7 @@ def wactive(create_type: str, table_name: str, column: List):
 
     if create_type == "create":
         """ テーブルの作成 """
-        table_column_type = "id integer primary key, "
+        table_column_type = "id integer PRIMARY KEY AUTOINCREMENT, "
 
         for i, c in enumerate(column):
             info = c.split(":")
@@ -46,7 +46,6 @@ def wactive(create_type: str, table_name: str, column: List):
 
     elif create_type == "add":
         """ カラムの追加 """
-
         info = column[0].split(":")
         table_column_type = info[0] + " " + info[1]
 
