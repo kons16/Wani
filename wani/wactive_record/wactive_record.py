@@ -5,6 +5,7 @@ import sqlite3
 import time
 from datetime import datetime, timedelta, timezone
 from typing import List
+from .persistence import Persistance
 
 
 class WactiveRecord:
@@ -69,8 +70,3 @@ class WactiveRecord:
                 s += ", '{}'".format(item)
         s += ")"
         return s
-
-
-class WactiveObject:
-    def __init__(self):
-        pass
