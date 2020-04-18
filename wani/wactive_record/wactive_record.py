@@ -40,11 +40,20 @@ class WactiveRecord:
         """ idが一番大きいレコードを取得 """
 
     def find(self, id: int):
-        """ idのレコードを取得し, WactiveObjectクラスとして返す """
+        """ idのレコードを取得し, Persistanceのオブジェクトとして返す """
         self.c.execute("SELECT * FROM {} WHERE id = {}".format(self.table, id))
-        get_result = WactiveObject(self.c.fetchone())
+        fetchone = self.c.fetchone()
+
+        # カラム名: レコードのデータ で保存
+        name_record = {}
+        result = []
+        for i, d in enumerate(self.c.description):
+            name_record[d[0]] = fetchone[i]
+
+        result.append(name_record)
+
         self.c.close()
-        return get_result
+        return result
 
     def find_by(self, column_name, search_word: str):
         """ column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得 """
