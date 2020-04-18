@@ -1,34 +1,35 @@
 """
 WactiveRecordでDB操作
+
+・WactiveRecordクラス
+
+・Persistanceクラス
+モデルから得たレコードが持つ処理
+    - update
 """
 import sqlite3
 import time
 from datetime import datetime, timedelta, timezone
 from typing import List
-from .persistence import Persistance
 
 
 class WactiveRecord:
     def __init__(self, table_name: str):
-        self.table = table_name
+        self.table_name = table_name
         self.conn = sqlite3.connect("db/development.sqlite3")
-        self.c = self.conn.cursor()
 
     def create(self, data: List):
         """ テーブルにレコードを追加 """
-        insert = "INSERT INTO {} VALUES ".format(self.table)
+        insert = "INSERT INTO {} VALUES ".format(self.table_name)
         s = self.__TupleMake(data)
         insert += s
         self.c.execute(insert)
         self.conn.commit()
         self.conn.close()
 
-    def update(self, **kwargs):
-        """ テーブルのレコードをアップデート """
-
     def all(self):
         """ 全レコードを配列として取得 """
-        self.c.execute('SELECT * FROM %s' % self.table)
+        self.c.execute('SELECT * FROM %s' % self.table_name)
         all_result = self.c.fetchall()
         self.c.close()
         return all_result
@@ -41,7 +42,8 @@ class WactiveRecord:
 
     def find(self, id: int):
         """ idのレコードを取得し, Persistanceのオブジェクトとして返す """
-        self.c.execute("SELECT * FROM {} WHERE id = {}".format(self.table, id))
+        self.c = self.conn.cursor()
+        self.c.execute("SELECT * FROM {} WHERE id = {}".format(self.table_name, id))
         fetchone = self.c.fetchone()
 
         # カラム名: レコードのデータ で保存
@@ -53,7 +55,7 @@ class WactiveRecord:
         result.append(name_record)
 
         self.c.close()
-        return result
+        return Persistance(self.table_name, result).data
 
     def find_by(self, column_name, search_word: str):
         """ column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得 """
@@ -79,3 +81,23 @@ class WactiveRecord:
                 s += ", '{}'".format(item)
         s += ")"
         return s
+
+
+class Persistance(WactiveRecord):
+    def __init__(self, table_name, fetch_data):
+        super().__init__(table_name)
+        self.data = fetch_data
+
+    def update(self, **kwargs):
+        """ レコードの更新 """
+        print(kwargs)
+        """
+        try:
+            self.c.execute("INSERT INTO {} VALUES ({})".format(self.table,
+                                                               ))
+        except sqlite3.Error as e:
+            print(e)
+
+        self.conn.commit()
+        self.c.close()
+        """
