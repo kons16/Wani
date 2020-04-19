@@ -36,10 +36,10 @@ def find_user(request, id):
 def change_user(request, id):
     """ usersテーブルの{id}レコードを見つけて名前をyayに変更 """
     u = WactiveRecord("users")
-    data = u.find(id)
+    record = u.find(id)
     # 未実装
-    data.update(name="yay")
-    return Response("{}".format(u.find(id)))
+    record.update(name="yay")
+    return Response("{}".format(record.data))
 
 
 @app.route("/data", method=["GET", "POST"])
