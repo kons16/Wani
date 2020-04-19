@@ -1,11 +1,15 @@
 """
-コマンドからsqliteへテーブルの作成やカラムの追加をできる.
+sqliteへテーブルの作成やカラムの追加をできる.
+具体的な実行方法は各docstringを参考
 
 テーブル作成
 $ python manage_db.py create [table_name] [カラム名]:[型] ...
 
 既存テーブルへのカラム追加
-$python manage_db.py add [table_name] [カラム名]:[型]
+$ python manage_db.py add [table_name] [カラム名]:[型]
+
+既存カラムへインデックス付与
+$ python manage_db.py index [table_name] [カラム名] [インデックス名]
 """
 import sys
 import sqlite3
@@ -44,6 +48,7 @@ def wactive(create_type: str, table_name: str, column: List):
         conn.commit()
         conn.close()
 
+
     elif create_type == "add":
         """ カラムの追加 """
         info = column[0].split(":")
@@ -55,6 +60,7 @@ def wactive(create_type: str, table_name: str, column: List):
         conn.commit()
         conn.close()
 
+
     elif create_type == "see":
         conn = sqlite3.connect("db/development.sqlite3")
         c = conn.cursor()
@@ -62,6 +68,15 @@ def wactive(create_type: str, table_name: str, column: List):
         data = c.fetchall()
         print(data)
         conn.close()
+
+
+    elif create_type == "index":
+        """ 
+        カラムにインデックスを付与
+        python manage_db.py index users name nameindex
+        """
+        # create index nameindex on user(name);
+
 
     else:
         print("no")
