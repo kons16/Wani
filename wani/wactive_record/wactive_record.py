@@ -23,15 +23,17 @@ class WactiveRecord:
         insert = "INSERT INTO {} VALUES ".format(self.table_name)
         s = self.__TupleMake(data)
         insert += s
-        self.c.execute(insert)
+        c = self.conn.cursor()
+        c.execute(insert)
         self.conn.commit()
         self.conn.close()
 
     def all(self):
         """ 全レコードを配列として取得 """
-        self.c.execute('SELECT * FROM %s' % self.table_name)
-        all_result = self.c.fetchall()
-        self.c.close()
+        c = self.conn.cursor()
+        c.execute('SELECT * FROM %s' % self.table_name)
+        all_result = c.fetchall()
+        c.close()
         return all_result
 
     def first(self):
@@ -42,20 +44,21 @@ class WactiveRecord:
 
     def find(self, id: int):
         """ idのレコードを取得し, Persistanceのオブジェクトとして返す """
-        self.c = self.conn.cursor()
-        self.c.execute("SELECT * FROM {} WHERE id = {}".format(self.table_name, id))
-        fetchone = self.c.fetchone()
+        c = self.conn.cursor()
+        c.execute("SELECT * FROM {} WHERE id = {}".format(self.table_name, id))
+        fetchone = c.fetchone()
 
         # カラム名: レコードのデータ で保存
         name_record = {}
         result = []
-        for i, d in enumerate(self.c.description):
+        for i, d in enumerate(c.description):
             name_record[d[0]] = fetchone[i]
 
         result.append(name_record)
 
-        self.c.close()
-        return Persistance(self.table_name, result).data
+        self.conn.close()
+        persist = Persistance(self.table_name, id, result)
+        return persist
 
     def find_by(self, column_name, search_word: str):
         """ column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得 """
@@ -84,20 +87,32 @@ class WactiveRecord:
 
 
 class Persistance(WactiveRecord):
-    def __init__(self, table_name, fetch_data):
+    def __init__(self, table_name, id, fetch_data):
         super().__init__(table_name)
         self.data = fetch_data
+        self.id = id
 
     def update(self, **kwargs):
-        """ レコードの更新 """
-        print(kwargs)
         """
+        レコードの更新
+        obj.update(name="tom", year="32")のときnameカラムとyearカラムを変更
+        """
+        c = self.conn.cursor()
+        update_sql = "UPDATE {} SET ".format(self.table_name)
+        # update_sqlにSETパラーメタを書き込んでいく
+        for i, (k, v) in enumerate(kwargs.items()):
+            if i != len(kwargs)-1:
+                # TODO: ""で囲むのを直す(int型などに対応させる)
+                update_sql += "{}=\"{}\", ".format(k, v)
+            else:
+                update_sql += "{}=\"{}\" ".format(k, v)
+
+        update_sql += "WHERE id={}".format(self.id)
+
         try:
-            self.c.execute("INSERT INTO {} VALUES ({})".format(self.table,
-                                                               ))
+            c.execute(update_sql)
         except sqlite3.Error as e:
             print(e)
 
         self.conn.commit()
-        self.c.close()
-        """
+        self.conn.close()
