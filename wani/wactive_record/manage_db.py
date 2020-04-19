@@ -2,10 +2,10 @@
 コマンドからsqliteへテーブルの作成やカラムの追加をできる.
 
 テーブル作成
-$ python wactive.py create [table_name] [カラム名]:[型] ...
+$ python manage_db.py create [table_name] [カラム名]:[型] ...
 
 既存テーブルへのカラム追加
-$python wactive.py add [table_name] [カラム名]:[型]
+$python manage_db.py add [table_name] [カラム名]:[型]
 """
 import sys
 import sqlite3
@@ -16,7 +16,7 @@ from typing import List
 def wactive(create_type: str, table_name: str, column: List):
     """
     AUTOINCREMENTありのid付きでusersテーブルを作成する場合
-    python wactive.py create users "name:text" "year:int"
+    python manage_db.py create users "name:text" "year:int"
     """
     # dbディレクトリがなければ作成
     if not os.path.exists("db"):
