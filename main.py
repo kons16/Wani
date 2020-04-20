@@ -1,4 +1,4 @@
-from wani import Wani, Response, TemplateResponse, WactiveRecord
+from wani import Wani, Response, TemplateResponse, WactiveRecord, Auth
 from wsgiref.simple_server import make_server
 from wsgi_static_middleware import StaticMiddleware
 import os
@@ -37,7 +37,6 @@ def change_user(request, id):
     """ usersテーブルの{id}レコードを見つけて名前をyayに変更 """
     u = WactiveRecord("users")
     record = u.find(id)
-    # 未実装
     record.update(name="yay")
     return Response("{}".format(record.data))
 
@@ -48,6 +47,20 @@ def get_data(request):
         return TemplateResponse("data-form.html")
     else:
         return Response("{}".format(request.forms["num"]))
+
+
+@app.route("/create", ["GET"])
+def create(request):
+    """ ユーザーを登録する """
+    data = {}
+    data.setdefault("name", "ks")
+    data.setdefault("email", "test@test.com")
+    data.setdefault("password", "password")
+
+    auth = Auth("users")
+    auth.create_user(data)
+
+    return TemplateResponse("users.html")
 
 
 @app.route("/user", ["GET"])

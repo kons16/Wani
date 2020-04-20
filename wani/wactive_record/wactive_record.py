@@ -74,7 +74,7 @@ class WactiveRecord:
         return loc
 
     def __TupleMake(self, data: List) -> str:
-        """ リストのデータを()に変換する """
+        """ リストのデータを文字列に変換する """
         # time = self.__CreateTimeStamp()
         s = "(null, "
         for i, item in enumerate(data):
