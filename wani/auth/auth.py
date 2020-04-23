@@ -10,6 +10,9 @@ bcrypt.checkpw(b"super secret password", hashed)): boolean
 """
 import bcrypt
 import sqlite3
+import uuid
+import OpenSSL
+from http import cookies
 
 
 class Auth:
@@ -37,13 +40,17 @@ class Auth:
         conn.commit()
         conn.close()
 
-    def session_new(self):
+    def session_new(self, **kwargs):
         """ 新しいセッションのページ(ログイン) """
         pass
 
-    def session_create(self):
+    def session_create(self, **kwargs) -> bool:
         """ 新しいセッションの作成(ログイン) """
-        pass
+        # セッションIDの作成
+        session_id = uuid.UUID(bytes=OpenSSL.rand.bytes(16))
+        cookie = cookies.SimpleCookie()
+        cookie['SESSION_ID'] = session_id
+
 
     def session_destory(self):
         """ セッションの削除(ログアウト) """

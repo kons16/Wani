@@ -63,6 +63,18 @@ def create(request):
     return TemplateResponse("users.html")
 
 
+@app.route("/login", ["GET"])
+def login(request):
+    data = {}
+    data.setdefault("email", "test@test.com")
+    data.setdefault("password", "password")
+
+    auth = Auth("users")
+    auth.session_create(data)
+
+    return TemplateResponse("users.html")
+
+
 @app.route("/user", ["GET"])
 def users(request):
     users = ["user%s" % i for i in range(10)]
