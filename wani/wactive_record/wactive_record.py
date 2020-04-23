@@ -48,12 +48,8 @@ class WactiveRecord:
         c.execute("SELECT * FROM {} WHERE id = {}".format(self.table_name, id))
         fetchone = c.fetchone()
 
-        # カラム名: レコードのデータ で保存
-        name_record = {}
         result = []
-        for i, d in enumerate(c.description):
-            name_record[d[0]] = fetchone[i]
-
+        name_record = self.__makeFetchColumnData(fetchone, c.description)
         result.append(name_record)
 
         self.conn.close()
@@ -62,6 +58,19 @@ class WactiveRecord:
 
     def find_by(self, column_name, search_word: str):
         """ column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得 """
+        c = self.conn.cursor()
+        c.execute("SELECT * FROM {} WHERE {} = {} by id DESC LIMIT 1".format(self.table_name,
+                                                                             column_name,
+                                                                             search_word))
+        fetchone = c.fetchone()
+
+        result = []
+        name_record = self.__makeFetchColumnData(fetchone, c.description)
+        result.append(name_record)
+
+        self.conn.close()
+        persist = Persistance(self.table_name, id, result)
+        return persist
 
     def where(self, column_name, search_word: str):
         """ 該当するレコード全件を取得 """
@@ -84,6 +93,17 @@ class WactiveRecord:
                 s += ", '{}'".format(item)
         s += ")"
         return s
+
+    def __makeFetchColumnData(self, fetchone, description) -> dict:
+        """
+        fetchしたデータをカラム名を付けてview側に返すようにする
+        カラム名: レコードのデータ で保存する
+        """
+        name_record = {}
+        for i, d in enumerate(description):
+            name_record[d[0]] = fetchone[i]
+
+        return name_record
 
 
 class Persistance(WactiveRecord):
