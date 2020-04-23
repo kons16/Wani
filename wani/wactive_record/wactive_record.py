@@ -4,7 +4,7 @@ WactiveRecordでDB操作
 ・WactiveRecordクラス
 
 ・Persistanceクラス
-モデルから得たレコードが持つ処理
+モデルから得たレコードが個々に持つ処理
     - update
 """
 import sqlite3
@@ -56,12 +56,17 @@ class WactiveRecord:
         persist = Persistance(self.table_name, id, result)
         return persist
 
-    def find_by(self, column_name, search_word: str):
-        """ column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得 """
+    def find_by(self, **kwargs):
+        """
+        column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得
+        kwargs => {"name": "tom"}
+        """
+        key = list(kwargs.keys())[0]
+        value = list(kwargs.values())[0]
         c = self.conn.cursor()
-        c.execute("SELECT * FROM {} WHERE {} = {} by id DESC LIMIT 1".format(self.table_name,
-                                                                             column_name,
-                                                                             search_word))
+        c.execute("SELECT * FROM {} WHERE {}=\"{}\" ORDER BY id DESC LIMIT 1".format(self.table_name,
+                                                                                     key,
+                                                                                     value))
         fetchone = c.fetchone()
 
         result = []
@@ -69,7 +74,7 @@ class WactiveRecord:
         result.append(name_record)
 
         self.conn.close()
-        persist = Persistance(self.table_name, id, result)
+        persist = Persistance(self.table_name, result[0]["id"], result)
         return persist
 
     def where(self, column_name, search_word: str):
@@ -94,7 +99,7 @@ class WactiveRecord:
         s += ")"
         return s
 
-    def __makeFetchColumnData(self, fetchone, description) -> dict:
+    def __makeFetchColumnData(self, fetchone: tuple, description: tuple) -> dict:
         """
         fetchしたデータをカラム名を付けてview側に返すようにする
         カラム名: レコードのデータ で保存する
@@ -107,7 +112,7 @@ class WactiveRecord:
 
 
 class Persistance(WactiveRecord):
-    def __init__(self, table_name, id, fetch_data):
+    def __init__(self, table_name: str, id: int, fetch_data: List):
         super().__init__(table_name)
         self.data = fetch_data
         self.id = id

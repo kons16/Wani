@@ -51,7 +51,6 @@ class Auth:
         cookie = cookies.SimpleCookie()
         cookie['SESSION_ID'] = session_id
 
-
     def session_destory(self):
         """ セッションの削除(ログアウト) """
         pass

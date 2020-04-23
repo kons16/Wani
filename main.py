@@ -32,6 +32,14 @@ def find_user(request, id):
     return Response("{}".format(data))
 
 
+@app.route("/find_by", ["GET"])
+def find_by(request):
+    """ usersテーブルの{id}レコードを見つける"""
+    u = WactiveRecord("users")
+    record = u.find_by(name="tom")
+    return Response("{}".format(record.data[0]["name"]))
+
+
 @app.route("/change_user/{id}", ["GET"])
 def change_user(request, id):
     """ usersテーブルの{id}レコードを見つけて名前をyayに変更 """
