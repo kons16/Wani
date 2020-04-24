@@ -29,18 +29,29 @@ class WactiveRecord:
         self.conn.close()
 
     def all(self) -> List:
-        """ 全レコードを配列として取得 """
+        """
+        全レコードを配列として取得
+
+        :result [{'id': 1, 'name': 'yay', 'email': None, 'password': None}, {'id': 2 ...}]
+        """
         c = self.conn.cursor()
         c.execute('SELECT * FROM %s' % self.table_name)
-        all_result = c.fetchall()
+        all_record = c.fetchall()
         c.close()
-        return all_result
+
+        result = []
+        for record in all_record:
+            name_record = self.__makeFetchColumnData(record, c.description)
+            result.append(name_record)
+
+        print(result)
+        return result
 
     def first(self) -> List:
         """
         idが一番小さいレコードを取得
 
-        :persist [{"id": 1, "name": "tom"}]
+        :persist [{'id': 1, 'name': 'tom'}]
         """
         c = self.conn.cursor()
         c.execute("SELECT * FROM {} ORDER BY ASC LIMIT 1".format(self.table_name))
@@ -58,7 +69,7 @@ class WactiveRecord:
         """
         idが一番大きいレコードを取得
 
-        :persist [{"id": 1, "name": "tom"}]
+        :persist [{'id': 1, 'name': 'tom'}]
         """
         c = self.conn.cursor()
         c.execute("SELECT * FROM {} ORDER BY DESC LIMIT 1".format(self.table_name))
@@ -76,7 +87,7 @@ class WactiveRecord:
         """
         idのレコードを取得し, Persistanceのオブジェクトとして返す
 
-        :persist [{"id": 1, "name": "tom"}]
+        :persist [{'id': 1, 'name': 'tom'}]
         """
         c = self.conn.cursor()
         c.execute("SELECT * FROM {} WHERE id = {}".format(self.table_name, id))
@@ -95,7 +106,7 @@ class WactiveRecord:
         column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得
         kwargs => {"name": "tom"}
 
-        :persist [{"id": 1, "name": "tom"}]
+        :persist [{'id': 1, 'name': 'tom'}]
         """
         key = list(kwargs.keys())[0]
         value = list(kwargs.values())[0]
@@ -140,7 +151,7 @@ class WactiveRecord:
         fetchしたレコード(fetchone)をカラム名(description)を付けて辞書型として返すようにする
         カラム名: レコードのデータ で保存する
 
-        :name_record {"id": 1, "name": "tom"}
+        :name_record [{'id': 1, 'name': 'tom'}]
         """
         name_record = {}
         for i, d in enumerate(description):
