@@ -13,14 +13,15 @@ app = Wani()
 def hello(request):
     u = WactiveRecord("users")
     all_users = u.all()
-    return Response("name: {}".format(all_users[0][0]))
+    # all_usersの一番目のレコードを表示
+    return Response("{}".format(all_users[0]))
 
 
 @app.route("/user/{name}", ["GET"])
 def user_detail(request, name):
     """ {name}をテーブルに保存 """
     u = WactiveRecord("users")
-    u.create([name])
+    u.create([name, "a@a.com", "pass"])
     return Response("Hello {name}".format(name=name))
 
 
@@ -34,10 +35,19 @@ def find_user(request, id):
 
 @app.route("/find_by", ["GET"])
 def find_by(request):
-    """ usersテーブルの{id}レコードを見つける"""
+    """ usersテーブルの指定されたnameレコードを見つける """
     u = WactiveRecord("users")
     record = u.find_by(name="tom")
     return Response("{}".format(record.data[0]["name"]))
+
+
+@app.route("/where", ["GET"])
+def where(request):
+    """ where句で指定されたレコードを表示 """
+    u = WactiveRecord("users")
+    # idが3以上のレコードを全件取得
+    all_record = u.where("name == tom")
+    return Response("{}".format(all_record))
 
 
 @app.route("/change_user/{id}", ["GET"])
@@ -78,7 +88,7 @@ def login(request):
     data.setdefault("password", "password")
 
     auth = Auth("users")
-    auth.session_create(data)
+    auth.session_create(email="test@test.com", password="password")
 
     return TemplateResponse("users.html")
 

@@ -104,8 +104,8 @@ class WactiveRecord:
     def find_by(self, **kwargs) -> List:
         """
         column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得
-        kwargs => {"name": "tom"}
 
+        :kwargs => {"name": "tom"}
         :persist [{'id': 1, 'name': 'tom'}]
         """
         key = list(kwargs.keys())[0]
@@ -124,8 +124,36 @@ class WactiveRecord:
         persist = Persistance(self.table_name, result[0]["id"], result)
         return persist
 
-    def where(self, column_name, search_word: str):
-        """ 該当するレコード全件を取得 """
+    def where(self, rule: str):
+        """
+        該当するレコード全件を取得
+        :ruleの演算子前後はスペース1つ空ける
+        "id >= 10" や　"name = tom" など
+
+        :rule "id > 10"
+        :persist [{'id': 1, 'name': 'tom'}]
+        """
+        pre_var = rule.split(" ")[0]
+        ope = rule.split(" ")[1]
+        aft_var = rule.split(" ")[2]
+
+        c = self.conn.cursor()
+        # TODO: int型のとき比較できない
+        c.execute("SELECT * FROM {} WHERE {}{}\"{}\"".format(self.table_name,
+                                                             pre_var,
+                                                             ope,
+                                                             aft_var))
+        all_record = c.fetchall()
+        c.close()
+
+        result = []
+        for record in all_record:
+            name_record = self.__makeFetchColumnData(record, c.description)
+            result.append(name_record)
+
+        print(result)
+        return result
+
 
     def __CreateTimeStamp(self):
         """ タイムスタンプの作成 """
