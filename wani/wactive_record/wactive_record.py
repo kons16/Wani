@@ -124,7 +124,7 @@ class WactiveRecord:
         persist = Persistance(self.table_name, result[0]["id"], result)
         return persist
 
-    def where(self, rule: str):
+    def where(self, rule: str) -> List:
         """
         該当するレコード全件を取得
         :ruleの演算子前後はスペース1つ空ける
