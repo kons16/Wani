@@ -154,7 +154,6 @@ class WactiveRecord:
         print(result)
         return result
 
-
     def __CreateTimeStamp(self):
         """ タイムスタンプの作成 """
         now = time.time()

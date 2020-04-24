@@ -11,8 +11,10 @@ bcrypt.checkpw(b"super secret password", hashed)): boolean
 import bcrypt
 import sqlite3
 import uuid
-import OpenSSL
 from http import cookies
+from wani import WactiveRecord
+import datetime
+import os
 
 
 class Auth:
@@ -45,11 +47,22 @@ class Auth:
         pass
 
     def session_create(self, **kwargs) -> bool:
-        """ 新しいセッションの作成(ログイン) """
-        # セッションIDの作成
-        session_id = uuid.UUID(bytes=OpenSSL.rand.bytes(16))
-        cookie = cookies.SimpleCookie()
-        cookie['SESSION_ID'] = session_id
+        """
+        新しいセッションの作成(ログイン)
+
+        kwargs => {"email": "a@a.com", "password": "pass"}
+        DBにユーザーが登録されているかどうかは、emailカラムをもとに検索する
+        """
+        # DBにユーザーが登録されているかどうか
+        u = WactiveRecord("users")
+        if u.find_by(email=kwargs["email"]):
+            # セッションIDの作成
+            session_id = uuid.uuid4()
+            cookie = cookies.SimpleCookie(os.environ.get("HTTP_COOKIE", ""))
+            expires = datetime.datetime.now() + datetime.timedelta(days=1)
+            cookie["SESSION_ID"] = session_id
+            cookie["SESSION_ID"]["expires"] = expires.strftime("%a, %d-%b-%Y %H:%M:%S GMT")
+            print(cookie)
 
     def session_destory(self):
         """ セッションの削除(ログアウト) """
