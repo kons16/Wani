@@ -2,7 +2,7 @@
 sqliteへテーブルの作成やカラムの追加をできる.
 具体的な実行方法は各docstringを参考
 
-テーブル作成
+テーブル作成(authでユーザーが登録されているか検索する際はemailカラムをもとに検索を行う)
 $ python manage_db.py create [table_name] [カラム名]:[型] ...
 
 既存テーブルへのカラム追加
