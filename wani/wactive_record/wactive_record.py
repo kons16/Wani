@@ -5,7 +5,6 @@ WactiveRecordでDB操作
 
 ・Persistanceクラス
 モデルから得たレコードが個々に持つ処理
-    - update
 """
 import sqlite3
 import time
@@ -44,7 +43,6 @@ class WactiveRecord:
             name_record = self.__makeFetchColumnData(record, c.description)
             result.append(name_record)
 
-        print(result)
         return result
 
     def first(self) -> List:
@@ -111,9 +109,15 @@ class WactiveRecord:
         key = list(kwargs.keys())[0]
         value = list(kwargs.values())[0]
         c = self.conn.cursor()
-        c.execute("SELECT * FROM {} WHERE {}=\"{}\" ORDER BY id DESC LIMIT 1".format(self.table_name,
+        # valueがint型のときエスケープシーケンスさせない
+        if type(value) is int:
+            c.execute("SELECT * FROM {} WHERE {}={} ORDER BY id DESC LIMIT 1".format(self.table_name,
                                                                                      key,
                                                                                      value))
+        else:
+            c.execute("SELECT * FROM {} WHERE {}=\"{}\" ORDER BY id DESC LIMIT 1".format(self.table_name,
+                                                                                         key,
+                                                                                         value))
         fetchone = c.fetchone()
 
         result = []
@@ -138,11 +142,16 @@ class WactiveRecord:
         aft_var = rule.split(" ")[2]
 
         c = self.conn.cursor()
-        # TODO: int型のとき比較できない
-        c.execute("SELECT * FROM {} WHERE {}{}\"{}\"".format(self.table_name,
+        if type(aft_var) is int:
+            c.execute("SELECT * FROM {} WHERE {}{}{}".format(self.table_name,
                                                              pre_var,
                                                              ope,
                                                              aft_var))
+        else:
+            c.execute("SELECT * FROM {} WHERE {}{}\"{}\"".format(self.table_name,
+                                                                 pre_var,
+                                                                 ope,
+                                                                 aft_var))
         all_record = c.fetchall()
         c.close()
 
@@ -203,10 +212,16 @@ class Persistance(WactiveRecord):
         # update_sqlにSETパラーメタを書き込んでいく
         for i, (k, v) in enumerate(kwargs.items()):
             if i != len(kwargs)-1:
-                # TODO: ""で囲むのを直す(int型などに対応させる)
-                update_sql += "{}=\"{}\", ".format(k, v)
+                if type(v) is int:
+                    update_sql += "{}={}, ".format(k, v)
+                else:
+                    update_sql += "{}=\"{}\", ".format(k, v)
+
             else:
-                update_sql += "{}=\"{}\" ".format(k, v)
+                if type(v) is int:
+                    update_sql += "{}={}, ".format(k, v)
+                else:
+                    update_sql += "{}=\"{}\", ".format(k, v)
 
         update_sql += "WHERE id={}".format(self.id)
 

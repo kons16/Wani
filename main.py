@@ -37,7 +37,7 @@ def find_user(request, id):
 def find_by(request):
     """ usersテーブルの指定されたnameレコードを見つける """
     u = WactiveRecord("users")
-    record = u.find_by(name="tom")
+    record = u.find_by(id=1)
     return Response("{}".format(record.data[0]["name"]))
 
 
