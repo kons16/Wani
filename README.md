@@ -1,9 +1,52 @@
 # Wani
 WSGIの仕様に沿ったWebフレームワークです。  
 
-## A Simple Example
+## Wani サンプル
+```Python
+from wani import Wani, Response
+from wsgiref.simple_server import make_server
 
-## WactiveRecord(ORM)
+app = Wani()
+
+
+@app.route("/", ["GET"])
+def hello(request):
+    return Response("Hello, Wani")
+
+
+if __name__ == "__main__":
+    httpd = make_server("", 8000, app)
+    httpd.serve_forever()
+```
+ブラウザから `http://127.0.0.1:8000/` にアクセスすると "Hello, Wani" と表示されます。
+
+## ルーティング
+
+
+## DB(SQLite)
+Waniは標準のORM(WactiveRecord)で、SQLiteを扱うことができます。
+
+### manage_db.py
+`wani/wactive_record/manage_db.py` ではテーブルの作成、カラムの追加、インデックス付与などができます。  
+
+* <B>テーブルの作成</B>  
+authでユーザーが登録されているか検索する際はemailカラムをもとに検索を行うためemailカラムの追加が必須。  
+idは自動付与される(PRIMARY KEY AUTOINCREMENT)。  
+テーブルは `db/development.sqlite3` に保存。  
+$ python manage_db.py create [table_name] [カラム名]:[型] ...  
+`$ python manage_db.py create users "name:text" "year:int" "email":text`  
+
+* <B>既存テーブルへのカラム追加</B>  
+$ python manage_db.py add [table_name] [カラム名]:[型]  
+`$ python manage_db.py add users "place:text"`    
+
+* <B>既存カラムへインデックス付与</B>  
+インデックス名はデフォルトで "カラム名index" になる。    
+$ python manage_db.py index [table_name] [カラム名]  
+`$ python manage_db.py index users name`  
+
+
+### WactiveRecord(ORM)
 
 ```Python
 from wani import WactiveRecord
