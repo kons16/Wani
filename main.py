@@ -100,6 +100,4 @@ def users(request):
 
 
 if __name__ == "__main__":
-    app = StaticMiddleware(app, static_root='static', static_dirs=STATIC_DIRS)
-    httpd = make_server("", 8000, app)
-    httpd.serve_forever()
+    app.run()
