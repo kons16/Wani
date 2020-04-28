@@ -1,6 +1,4 @@
 from wani import Wani, Response, TemplateResponse, WactiveRecord, Auth
-from wsgiref.simple_server import make_server
-from wsgi_static_middleware import StaticMiddleware
 import os
 
 BASE_DIR = os.path.dirname(__name__)
