@@ -14,7 +14,7 @@ def hello(request):
     u = WactiveRecord("users")
     all_users = u.all()
     # all_usersの一番目のレコードを表示
-    return Response("{}".format(all_users[0]))
+    return Response("Hello, {}".format(all_users[0]["name"]))
 
 
 @app.route("/user/{name}", ["GET"])
@@ -29,8 +29,8 @@ def user_detail(request, name):
 def find_user(request, id):
     """ usersテーブルの{id}レコードを見つける"""
     u = WactiveRecord("users")
-    data = u.find(id)
-    return Response("{}".format(data))
+    record = u.find(id)
+    return Response("{}".format(record.data))
 
 
 @app.route("/find_by", ["GET"])
