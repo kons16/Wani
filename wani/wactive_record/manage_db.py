@@ -69,8 +69,8 @@ def wactive(create_type: str, table_name: str, column: List):
         conn.close()
 
     elif create_type == "index":
-        """ 
-        カラムにインデックスを付与
+        """  カラムにインデックスを付与
+
         SQL : create index nameindex on user(name);
         python manage_db.py index users name
         """

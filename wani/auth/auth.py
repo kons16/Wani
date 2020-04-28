@@ -47,11 +47,10 @@ class Auth:
         pass
 
     def session_create(self, **kwargs) -> bool:
-        """
-        新しいセッションの作成(ログイン)
-
-        kwargs => {"email": "a@a.com", "password": "pass"}
+        """ 新しいセッションの作成(ログイン)
         DBにユーザーが登録されているかどうかは、emailカラムをもとに検索する
+
+        :param kwargs: {"email": "a@a.com", "password": "pass"}
         """
         # DBにユーザーが登録されているかどうか
         u = WactiveRecord("users")

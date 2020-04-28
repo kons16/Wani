@@ -28,8 +28,7 @@ class WactiveRecord:
         self.conn.close()
 
     def all(self) -> List:
-        """
-        全レコードを配列として取得
+        """ 全レコードを配列として取得
 
         :result [{'id': 1, 'name': 'yay', 'email': None, 'password': None}, {'id': 2 ...}]
         """
@@ -46,8 +45,7 @@ class WactiveRecord:
         return result
 
     def first(self) -> List:
-        """
-        idが一番小さいレコードを取得
+        """ idが一番小さいレコードを取得
 
         :persist [{'id': 1, 'name': 'tom'}]
         """
@@ -64,8 +62,7 @@ class WactiveRecord:
         return persist
 
     def last(self) -> List:
-        """
-        idが一番大きいレコードを取得
+        """ idが一番大きいレコードを取得
 
         :persist [{'id': 1, 'name': 'tom'}]
         """
@@ -82,8 +79,7 @@ class WactiveRecord:
         return persist
 
     def find(self, id: int) -> List:
-        """
-        idのレコードを取得し, Persistanceのオブジェクトとして返す
+        """ idのレコードを取得し, Persistanceのオブジェクトとして返す
 
         :persist [{'id': 1, 'name': 'tom'}]
         """
@@ -100,10 +96,9 @@ class WactiveRecord:
         return persist
 
     def find_by(self, **kwargs) -> List:
-        """
-        column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得
+        """ column_nameのsearch_wordの中で最初にヒットした1件のレコードを取得
 
-        :kwargs => {"name": "tom"}
+        :param kwargs: {"name": "tom"}
         :persist [{'id': 1, 'name': 'tom'}]
         """
         key = list(kwargs.keys())[0]
@@ -129,12 +124,11 @@ class WactiveRecord:
         return persist
 
     def where(self, rule: str) -> List:
-        """
-        該当するレコード全件を取得
+        """ 該当するレコード全件を取得
         :ruleの演算子前後はスペース1つ空ける
         "id >= 10" や　"name = tom" など
 
-        :rule "id > 10"
+        :param rule: SQLに書く条件文 例 "id > 10"
         :persist [{'id': 1, 'name': 'tom'}]
         """
         pre_var = rule.split(" ")[0]
@@ -183,8 +177,7 @@ class WactiveRecord:
         return s
 
     def __makeFetchColumnData(self, fetchone: tuple, description: tuple) -> dict:
-        """
-        fetchしたレコード(fetchone)をカラム名(description)を付けて辞書型として返すようにする
+        """ fetchしたレコード(fetchone)をカラム名(description)を付けて辞書型として返すようにする。
         カラム名: レコードのデータ で保存する
 
         :name_record [{'id': 1, 'name': 'tom'}]
@@ -203,8 +196,8 @@ class Persistance(WactiveRecord):
         self.id = id
 
     def update(self, **kwargs):
-        """
-        レコードの更新
+        """ レコードの更新
+
         obj.update(name="tom", year="32")のときnameカラムとyearカラムを変更
         """
         c = self.conn.cursor()
