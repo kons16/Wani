@@ -4,7 +4,6 @@ WSGIの仕様に沿ったWebフレームワークです。
 ## Wani サンプル
 ```Python
 from wani import Wani, Response
-from wsgiref.simple_server import make_server
 
 app = Wani()
 
@@ -15,10 +14,9 @@ def hello(request):
 
 
 if __name__ == "__main__":
-    httpd = make_server("", 8000, app)
-    httpd.serve_forever()
+    app.run()
 ```
-ブラウザから `http://127.0.0.1:8000/` にアクセスすると "Hello, Wani" と表示されます。
+ブラウザから `http://127.0.0.1:5000/` にアクセスすると "Hello, Wani" と表示されます。
 
 ## ルーティング
 
