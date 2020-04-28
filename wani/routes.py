@@ -8,6 +8,11 @@ def http404(env, start_response):
     return [b'404 Not Found']
 
 
+def http_test(env, start_response):
+    start_response("405 Method Not Allowed", [("Content-type", "text/plain; charset=utf-8")])
+    return [b"test_response"]
+
+
 def http405(env, start_response):
     start_response("405 Method Not Allowed", [("Content-type", "text/plain; charset=utf-8")])
     return [b"405 Method Not Allowed"]
@@ -37,7 +42,7 @@ class Router:
 
     def match(self, method, path):
         match_flag = False
-        error_callback = http404
+        error_callback = http_test
         get_path = split_by_slash(path)
 
         for route in self.routes:

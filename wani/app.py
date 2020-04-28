@@ -1,6 +1,6 @@
 from .routes import Router
 from .requests import Request
-from .responses import TemplateResponse
+from .responses import TemplateResponse, Response
 import os
 from jinja2 import Environment, FileSystemLoader
 
@@ -22,7 +22,11 @@ class Wani:
         request = Request(env)
         callback, url_vars = self.router.match(request.method, request.path)
 
-        response = callback(request, **url_vars)
+        if request.path != "/favicon.ico":
+            response = callback(request, **url_vars)
+        else:
+            response = Response(status=404)
+
         start_response(response.status_code, response.header_list)
 
         if isinstance(response, TemplateResponse):

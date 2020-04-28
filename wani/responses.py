@@ -59,4 +59,3 @@ class TemplateResponse(Response):
     def render_body(self, jinja2_environment):
         template = jinja2_environment.get_template(self.filename)
         return template.render(**self.tpl_args).encode(self.charset)
-
