@@ -19,7 +19,32 @@ if __name__ == "__main__":
 ブラウザから `http://127.0.0.1:5000/` にアクセスすると "Hello, Wani" と表示されます。
 
 ## ルーティング
+デコレータでルーティングを設定できます。
+```Python
+@app.route("/", ["GET"])
+def hello(request):
+    """ usersテーブルのレコードを全件取得し、一番目のレコードを表示 """
+    u = WactiveRecord("users")
+    all_users = u.all()
+    return Response("Hello, {}".format(all_users[0]["name"]))
 
+
+@app.route("/find_user/{id}", ["GET"])
+def find_user(request, id):
+    """ usersテーブルから引数idのレコードを見つける """
+    u = WactiveRecord("users")
+    record = u.find(id)
+    return Response("{}".format(record.data))
+   
+   
+@app.route("/data", method=["GET", "POST"])
+def get_data(request):
+    if request.method == "GET":
+        return TemplateResponse("data-form.html")
+    else:
+        return Response("{}".format(request.forms["num"]))
+
+```
 
 ## DB(SQLite)
 Waniは標準のORM(WactiveRecord)で、SQLiteを扱うことができます。
